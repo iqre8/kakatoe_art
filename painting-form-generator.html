@@ -438,7 +438,7 @@ Ik zie dat hij te koop is voor {price}</textarea>
                 const qrJsonStr = JSON.stringify(qrCodeJsonData);
                 // We'll use encodeURIComponent directly on the JSON string instead of base64 encoding
                 // This is more reliable across browsers and prevents encoding issues
-                const kakatoeLink = `https://kakatoe.tartan.bond/painting.html?data=${encodeURIComponent(qrJsonStr)}`;
+                const kakatoeLink = `https://kakatoe.bee.sr/painting.html?data=${encodeURIComponent(qrJsonStr)}`;
                 
                 kakatoeLinkOutput.textContent = kakatoeLink;
                 
