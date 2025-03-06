@@ -492,6 +492,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     width: 300,
                     height: 300,
                     type: "svg",
+                    data: whatsappLink,
                     image: "./WhatsApp.svg",
                     imageOptions: {
                         saveAsBlob:true,
@@ -499,11 +500,11 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                         imageSize: 0.4,
                         hideBackgroundDots: true
                     },
-                    data: whatsappLink,
                     margin: 0,
                     dotsOptions: {
                         color: "#25D366", // WhatsApp green
-                        type: "dots"
+                        type: "dots",
+                        roundSize: true
                     },
                     backgroundOptions: {
                         color: "#FFFFFF",
