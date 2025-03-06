@@ -132,7 +132,7 @@
             justify-content: center;
         }
 
-        #qrcode, #kakotoeQrcode {
+        #qrcode, #kakatoeQrcode {
             margin: 0 auto;
             padding: 10px;
             background: #fff;
@@ -265,7 +265,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 <button class="copy-btn" id="copyKakatoeLinkBtn">Copy Link</button>
                 <div class="qrcode-container">
                     <h3>Kakatoe Page QR Code</h3>
-                    <div id="kakotoeQrcode"></div>
+                    <div id="kakatoeQrcode"></div>
                     <button id="downloadKakatoeQrBtn" style="display: none; margin-top: 10px;">Download QR Code</button>
                 </div>
                 <p class="notice" style="margin-top: 15px; font-style: italic; color: #666;">
@@ -318,7 +318,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
             const downloadQrBtn = document.getElementById('downloadQrBtn');
 
             const kakatoeLinkOutput = document.getElementById('kakatoeLinkOutput');
-            const kakotoeQrcodeContainer = document.getElementById('kakotoeQrcode');
+            const kakatoeQrcodeContainer = document.getElementById('kakatoeQrcode');
             const downloadKakatoeQrBtn = document.getElementById('downloadKakatoeQrBtn');
 
             // Copy buttons
@@ -518,7 +518,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 downloadQrBtn.style.display = 'inline-block';
 
                 // Generate Kakatoe QR code
-                kakotoeQrcodeContainer.innerHTML = '';
+                kakatoeQrcodeContainer.innerHTML = '';
                 const kakatoeQrCode = new QRCodeStyling({
                     width: 1000,
                     height: 1000,
@@ -546,7 +546,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                         type: "dot"
                     }
                 });
-                kakatoeQrCode.append(kakotoeQrcodeContainer);
+                kakatoeQrCode.append(kakatoeQrcodeContainer);
                 downloadKakatoeQrBtn.style.display = 'inline-block';
 
                 // Store QR code objects for download functionality
