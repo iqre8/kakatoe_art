@@ -252,17 +252,12 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
             <h2>Generated Output</h2>
 
             <div class="tabs">
-                <div class="tab active" data-tab="whatsappLink">WhatsApp Link</div>
-                <div class="tab" data-tab="kakatoeLink">Kakatoe Page Link</div>
+                <div class="tab active" data-tab="kakatoeLink">Kakatoe Page Link</div>
+                <div class="tab" data-tab="whatsappLink">WhatsApp Link</div>
                 <div class="tab" data-tab="htmlCode">HTML Code</div>
                 <div class="tab" data-tab="jsonData">JSON Data</div>
             </div>
 
-            <div class="tab-content active" id="whatsappLink">
-                <p>WhatsApp Direct Link:</p>
-                <div class="json-output" id="waLinkOutput">Generate a link first...</div>
-                <button class="copy-btn" id="copyWaLinkBtn">Copy Link</button>
-            </div>
 
             <div class="tab-content" id="kakatoeLink">
                 <p>Kakatoe Page Link:</p>
@@ -277,6 +272,12 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     Note: For QR code compatibility, the link contains only essential data.
                     The image URL is included directly in the JSON data.
                 </p>
+            </div>
+
+            <div class="tab-content active" id="whatsappLink">
+                <p>WhatsApp Direct Link:</p>
+                <div class="json-output" id="waLinkOutput">Generate a link first...</div>
+                <button class="copy-btn" id="copyWaLinkBtn">Copy Link</button>
             </div>
 
             <div class="tab-content" id="htmlCode">
@@ -495,8 +496,8 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 // Generate Kakatoe QR code
                 kakotoeQrcodeContainer.innerHTML = '';
                 const kakatoeQrCode = new QRCodeStyling({
-                    width: 240,
-                    height: 240,
+                    width: 1000,
+                    height: 1000,
                     type: "svg",
                     data: kakatoeLink,
                     image: "./canvas.svg",
