@@ -494,18 +494,18 @@ Ik zie dat hij te koop is voor {price}</textarea>
                 // Generate Kakatoe QR code
                 kakotoeQrcodeContainer.innerHTML = '';
                 const kakatoeQrCode = new QRCodeStyling({
-                    width: 1000,
-                    height: 1000,
+                    width: 240,
+                    height: 240,
                     type: "svg",
                     data: kakatoeLink,
                     image: "./canvas.svg",
                     imageOptions: {
                         crossOrigin: "anonymous",
                         margin: 0,
-                        imageSize: 0.4,
+                        imageSize: 0.3,
                         hideBackgroundDots: true
                     },
-                    margin: 10,
+                    margin: 0,
                     dotsOptions: {
                         color: "#196135", // Match header color
                         type: "dots"
