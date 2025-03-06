@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting Details Generator</title>
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+        .form-section, .preview-section, .output-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .output-section {
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .painting-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .painting-image {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #777;
+        }
+        .painting-details {
+            padding: 15px;
+        }
+        .painter-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .price {
+            font-size: 18px;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        .contact-button {
+            display: inline-block;
+            background-color: #2ecc71;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .qrcode-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .json-output {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        .copy-btn {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: white;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 0 4px 4px 4px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .full-width {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Painting Details Generator</h1>
+    </header>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Enter Painting Details</h2>
+            <form id="paintingForm">
+                <div class="form-group">
+                    <label for="painterName">Artist Name:</label>
+                    <input type="text" id="painterName" placeholder="e.g. Romeo Piké" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="paintingPrice">Price:</label>
+                    <input type="text" id="paintingPrice" placeholder="e.g. SRD 4000,-" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneNumber">WhatsApp Phone Number:</label>
+                    <input type="text" id="phoneNumber" placeholder="e.g. 597123456789" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="messageTemplate">WhatsApp Message Template:</label>
+                    <textarea id="messageTemplate" required>Beste heer {name},
+Ik ben geintereseerd in een schilderij te zien Bij Kakatoe @ Weidestraat 98
+Ik zie dat hij te koop is voor {price}</textarea>
+                    <small>Use {name} and {price} as placeholders that will be replaced with actual values.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageUrl">Image URL:</label>
+                    <input type="url" id="imageUrl" placeholder="https://example.com/painting.jpg" class="full-width">
+                    <small>Enter a direct link to the image on the web</small>
+                </div>
+                
+                <button type="button" id="generateBtn">Generate</button>
+                <button type="reset">Reset</button>
+            </form>
+        </div>
+        
+        <div class="preview-section">
+            <h2>Preview</h2>
+            <div id="paintingPreview">
+                <div class="painting-card">
+                    <div class="painting-image" id="previewImage">
+                        No image URL provided
+                    </div>
+                    <div class="painting-details">
+                        <div class="painter-name" id="previewName">Artist Name</div>
+                        <div class="price" id="previewPrice">Price</div>
+                        <a href="#" class="contact-button" id="previewContact">Contact to Purchase</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qrcode-container">
+                <h3>WhatsApp QR Code</h3>
+                <div id="qrcode"></div>
+                <button id="downloadQrBtn" style="display: none; margin-top: 10px;">Download QR Code</button>
+            </div>
+        </div>
+        
+        <div class="output-section">
+            <h2>Generated Output</h2>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="whatsappLink">WhatsApp Link</div>
+                <div class="tab" data-tab="kakatoeLink">Kakatoe Page Link</div>
+                <div class="tab" data-tab="htmlCode">HTML Code</div>
+                <div class="tab" data-tab="jsonData">JSON Data</div>
+            </div>
+            
+            <div class="tab-content active" id="whatsappLink">
+                <p>WhatsApp Direct Link:</p>
+                <div class="json-output" id="waLinkOutput">Generate a link first...</div>
+                <button class="copy-btn" id="copyWaLinkBtn">Copy Link</button>
+            </div>
+            
+            <div class="tab-content" id="kakatoeLink">
+                <p>Kakatoe Page Link:</p>
+                <div class="json-output" id="kakatoeLinkOutput">Generate a link first...</div>
+                <button class="copy-btn" id="copyKakatoeLinkBtn">Copy Link</button>
+                <div class="qrcode-container">
+                    <h3>Kakatoe Page QR Code</h3>
+                    <div id="kakotoeQrcode"></div>
+                    <button id="downloadKakatoeQrBtn" style="display: none; margin-top: 10px;">Download QR Code</button>
+                </div>
+                <p class="notice" style="margin-top: 15px; font-style: italic; color: #666;">
+                    Note: For QR code compatibility, the link contains only essential data.
+                    The image URL is included directly in the JSON data.
+                </p>
+            </div>
+            
+            <div class="tab-content" id="htmlCode">
+                <p>HTML Code for Painting Display:</p>
+                <div class="json-output" id="htmlOutput">Generate HTML first...</div>
+                <button class="copy-btn" id="copyHtmlBtn">Copy HTML</button>
+            </div>
+            
+            <div class="tab-content" id="jsonData">
+                <p>JSON Data for Painting:</p>
+                <div class="json-output" id="jsonOutput">Generate JSON first...</div>
+                <button class="copy-btn" id="copyJsonBtn">Copy JSON</button>
+                <button class="copy-btn" id="copyBase64Btn">Copy Base64 Encoded JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const painterNameInput = document.getElementById('painterName');
+            const paintingPriceInput = document.getElementById('paintingPrice');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const messageTemplateInput = document.getElementById('messageTemplate');
+            const imageUrlInput = document.getElementById('imageUrl');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            const previewName = document.getElementById('previewName');
+            const previewPrice = document.getElementById('previewPrice');
+            const previewContact = document.getElementById('previewContact');
+            const previewImage = document.getElementById('previewImage');
+            
+            const waLinkOutput = document.getElementById('waLinkOutput');
+            const htmlOutput = document.getElementById('htmlOutput');
+            const jsonOutput = document.getElementById('jsonOutput');
+            
+            const qrcodeContainer = document.getElementById('qrcode');
+            const downloadQrBtn = document.getElementById('downloadQrBtn');
+            
+            const kakatoeLinkOutput = document.getElementById('kakatoeLinkOutput');
+            const kakotoeQrcodeContainer = document.getElementById('kakotoeQrcode');
+            const downloadKakatoeQrBtn = document.getElementById('downloadKakatoeQrBtn');
+            
+            // Copy buttons
+            const copyWaLinkBtn = document.getElementById('copyWaLinkBtn');
+            const copyKakatoeLinkBtn = document.getElementById('copyKakatoeLinkBtn');
+            const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+            const copyJsonBtn = document.getElementById('copyJsonBtn');
+            const copyBase64Btn = document.getElementById('copyBase64Btn');
+            
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Image preview for URL
+            imageUrlInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url) {
+                    // Update preview
+                    previewImage.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.style.maxWidth = '100%';
+                    img.style.maxHeight = '100%';
+                    img.onerror = function() {
+                        previewImage.innerHTML = 'Unable to load image from URL';
+                    };
+                    previewImage.appendChild(img);
+                } else {
+                    previewImage.innerHTML = 'No image URL provided';
+                }
+            });
+            
+            // Live preview updates
+            painterNameInput.addEventListener('input', function() {
+                previewName.textContent = this.value || 'Artist Name';
+            });
+            
+            paintingPriceInput.addEventListener('input', function() {
+                previewPrice.textContent = this.value || 'Price';
+            });
+            
+            // Generate button click
+            generateBtn.addEventListener('click', function() {
+                // Validate form
+                if (!painterNameInput.value || !paintingPriceInput.value || !phoneNumberInput.value || !messageTemplateInput.value) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Create WhatsApp message
+                let message = messageTemplateInput.value
+                    .replace(/{name}/g, painterNameInput.value)
+                    .replace(/{price}/g, paintingPriceInput.value);
+                
+                // Create WhatsApp link
+                const phoneNumber = phoneNumberInput.value.replace(/[^0-9]/g, '');
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                
+                // Update preview contact button
+                previewContact.href = whatsappLink;
+                
+                // Create JSON data
+                let jsonData = {
+                    "Painter": painterNameInput.value,
+                    "Price": paintingPriceInput.value,
+                    "buy": whatsappLink
+                };
+                
+                // Add image URL to JSON if provided
+                if (imageUrlInput.value.trim()) {
+                    jsonData.img = imageUrlInput.value.trim();
+                    jsonData.imgType = "url"; // Indicate that this is a URL
+                }
+                
+                // Create HTML code
+                const htmlCode = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting Display</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .painting-card { background-color: white; max-width: 600px; margin: 0 auto; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .painting-image { width: 100%; height: auto; display: block; }
+        .painting-details { padding: 20px; }
+        .painter-name { font-size: 24px; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
+        .price { font-size: 20px; color: #27ae60; margin-bottom: 16px; font-weight: bold; }
+        .buy-button { display: inline-block; background-color: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="painting-card">
+        ${jsonData.img ? `<img src="${jsonData.img}" alt="Painting by ${jsonData.Painter}" class="painting-image">` : ''}
+        <div class="painting-details">
+            <div class="painter-name">Artist: ${jsonData.Painter}</div>
+            <div class="price">Price: ${jsonData.Price}</div>
+            <a href="${jsonData.buy}" class="buy-button">Contact to Purchase</a>
+        </div>
+    </div>
+</body>
+</html>`;
+                
+                // For QR code data, include the same image URL
+                let qrCodeJsonData = {
+                    "Painter": painterNameInput.value,
+                    "Price": paintingPriceInput.value,
+                    "buy": whatsappLink
+                };
+                
+                // Include image URL in QR code data if provided
+                if (imageUrlInput.value.trim()) {
+                    qrCodeJsonData.img = imageUrlInput.value.trim();
+                    qrCodeJsonData.imgType = "url"; // Indicate it's a URL
+                }
+                
+                const qrJsonStr = JSON.stringify(qrCodeJsonData);
+                // We'll use encodeURIComponent directly on the JSON string instead of base64 encoding
+                // This is more reliable across browsers and prevents encoding issues
+                const kakatoeLink = `https://kakatoe.tartan.bond/painting.html?data=${encodeURIComponent(qrJsonStr)}`;
+                
+                kakatoeLinkOutput.textContent = kakatoeLink;
+                
+                // Update outputs
+                waLinkOutput.textContent = whatsappLink;
+                htmlOutput.textContent = htmlCode;
+                jsonOutput.textContent = JSON.stringify(jsonData, null, 2);
+                
+                // Generate WhatsApp QR code
+                qrcodeContainer.innerHTML = '';
+                new QRCode(qrcodeContainer, {
+                    text: whatsappLink,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                downloadQrBtn.style.display = 'inline-block';
+                
+                // Generate Kakatoe QR code
+                kakotoeQrcodeContainer.innerHTML = '';
+                new QRCode(kakotoeQrcodeContainer, {
+                    text: kakatoeLink,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                downloadKakatoeQrBtn.style.display = 'inline-block';
+            });
+            
+            // Copy functions
+            copyWaLinkBtn.addEventListener('click', function() {
+                copyToClipboard(waLinkOutput.textContent);
+            });
+            
+            copyKakatoeLinkBtn.addEventListener('click', function() {
+                copyToClipboard(kakatoeLinkOutput.textContent);
+            });
+            
+            copyHtmlBtn.addEventListener('click', function() {
+                copyToClipboard(htmlOutput.textContent);
+            });
+            
+            copyJsonBtn.addEventListener('click', function() {
+                copyToClipboard(jsonOutput.textContent);
+            });
+            
+            copyBase64Btn.addEventListener('click', function() {
+                const jsonStr = jsonOutput.textContent;
+                const base64Json = btoa(jsonStr);
+                copyToClipboard(base64Json);
+                alert('Base64 encoded JSON copied to clipboard!');
+            });
+            
+            // Download WhatsApp QR Code
+            downloadQrBtn.addEventListener('click', function() {
+                const canvas = qrcodeContainer.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `whatsapp-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            });
+            
+            // Download Kakatoe QR Code
+            downloadKakatoeQrBtn.addEventListener('click', function() {
+                const canvas = kakotoeQrcodeContainer.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `kakatoe-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            });
+            
+            // Helper function to copy text to clipboard
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('Copied to clipboard!');
+            }
+        });
+    </script>
+</body>
+</html>

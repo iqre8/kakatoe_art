@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .painting-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .painting-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .painting-details {
+            padding: 20px;
+        }
+        .painter-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        .price {
+            font-size: 20px;
+            color: #27ae60;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+        .buy-button {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .buy-button:hover {
+            background-color: #2980b9;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+        .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #e74c3c;
+        }
+        #debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .placeholder-image {
+            width: 100%;
+            height: 300px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Art Gallery</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="painting-container">
+            <div class="loading">Loading painting information...</div>
+        </div>
+        <div id="debug-info"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Get the data parameter from the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const dataParam = urlParams.get('data');
+                
+                if (!dataParam) {
+                    throw new Error('No data parameter found in URL');
+                }
+                
+                // Try multiple approaches to parse the data
+                let data = null;
+                let successMethod = '';
+                
+                // Method 1: Try direct JSON parsing (in case it's not base64)
+                try {
+                    data = JSON.parse(dataParam);
+                    successMethod = 'Direct JSON parse';
+                } catch (e) {
+                    // Not direct JSON, continue to other methods
+                }
+                
+                // Method 2: Standard base64 decode
+                if (!data) {
+                    try {
+                        const jsonString = atob(dataParam);
+                        data = JSON.parse(jsonString);
+                        successMethod = 'Standard base64';
+                    } catch (e) {
+                        // Standard base64 failed, try other methods
+                    }
+                }
+                
+                // Method 3: URL-safe base64
+                if (!data) {
+                    try {
+                        // Replace URL-safe chars and fix padding
+                        const fixed = dataParam.replace(/-/g, '+').replace(/_/g, '/');
+                        const padded = fixed.padEnd(fixed.length + (4 - fixed.length % 4) % 4, '=');
+                        const jsonString = atob(padded);
+                        data = JSON.parse(jsonString);
+                        successMethod = 'URL-safe base64';
+                    } catch (e) {
+                        // URL-safe base64 failed, try other methods
+                    }
+                }
+                
+                // Method 4: URL-decoded then base64
+                if (!data) {
+                    try {
+                        const decoded = decodeURIComponent(dataParam);
+                        const jsonString = atob(decoded);
+                        data = JSON.parse(jsonString);
+                        successMethod = 'URL-decoded base64';
+                    } catch (e) {
+                        // URL-decoded base64 failed, try other methods
+                    }
+                }
+                
+                // Method 5: URL-decoded URL-safe base64
+                if (!data) {
+                    try {
+                        const decoded = decodeURIComponent(dataParam);
+                        const fixed = decoded.replace(/-/g, '+').replace(/_/g, '/');
+                        const padded = fixed.padEnd(fixed.length + (4 - fixed.length % 4) % 4, '=');
+                        const jsonString = atob(padded);
+                        data = JSON.parse(jsonString);
+                        successMethod = 'URL-decoded URL-safe base64';
+                    } catch (e) {
+                        // All methods failed
+                    }
+                }
+                
+                if (!data) {
+                    throw new Error('Could not parse data parameter using any method');
+                }
+                
+                // Handle image ID if present instead of direct image data
+                if (data.imageId && !data.img) {
+                    // In a real implementation, you would fetch the image based on the ID
+                    // For this demo, we'll show a placeholder
+                    console.log("Image ID detected:", data.imageId);
+                    // You would normally do something like:
+                    // fetchImageById(data.imageId).then(imgData => { data.img = imgData; displayPainting(data); });
+                    
+                    // For now, we'll just note this in the display
+                    data.imgPlaceholder = `Image ID: ${data.imageId}`;
+                }
+                
+                // Display the painting
+                displayPainting(data);
+                
+                // Show debug info when pressing Shift+D
+                document.addEventListener('keydown', function(e) {
+                    if (e.shiftKey && e.key === 'D') {
+                        const debugInfo = document.getElementById('debug-info');
+                        debugInfo.style.display = debugInfo.style.display === 'block' ? 'none' : 'block';
+                        debugInfo.textContent = `Success Method: ${successMethod}\nData Parameter: ${dataParam}\nParsed Data: ${JSON.stringify(data, null, 2)}`;
+                    }
+                });
+                
+            } catch (error) {
+                document.getElementById('painting-container').innerHTML = `
+                    <div class="error">
+                        Failed to load painting information. Please check the URL parameter.
+                        <br><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+                console.error('There was a problem parsing the data:', error);
+            }
+        });
+
+        function displayPainting(data) {
+            const container = document.getElementById('painting-container');
+            
+            // Prepare the image part of the HTML
+            let imageHtml = '';
+            
+            if (data.img) {
+                // We have a direct image
+                imageHtml = `<img src="${data.img}" alt="Painting by ${data.Painter}" class="painting-image">`;
+            } else if (data.imgPlaceholder) {
+                // We have a placeholder message
+                imageHtml = `<div class="placeholder-image">${data.imgPlaceholder}</div>`;
+            } else {
+                // No image at all
+                imageHtml = `<div class="placeholder-image">No image available</div>`;
+            }
+            
+            // Create HTML for the painting card
+            const htmlContent = `
+                <div class="painting-card">
+                    ${imageHtml}
+                    <div class="painting-details">
+                        <div class="painter-name">Artist: ${data.Painter}</div>
+                        <div class="price">Price: ${data.Price}</div>
+                        <a href="${data.buy}" class="buy-button">Contact</a>
+                    </div>
+                </div>
+            `;
+            
+            // Update the container with the painting card
+            container.innerHTML = htmlContent;
+        }
+    </script>
+</body>
+</html>
