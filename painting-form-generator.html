@@ -211,7 +211,7 @@
                     <label for="messageTemplate">WhatsApp Message Template:</label>
                     <textarea id="messageTemplate" required>Beste heer {name},
 Ik ben geintereseerd in een schilderij te zien bij Kakatoe @ Weidestraat 98
-Ik zie dat hij te koop is voor {price}</textarea>
+Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     <small>Use {name} and {price} as placeholders that will be replaced with actual values.</small>
                 </div>
 
@@ -384,6 +384,7 @@ Ik zie dat hij te koop is voor {price}</textarea>
                 let message = messageTemplateInput.value
                     .replace(/{name}/g, painterNameInput.value)
                     .replace(/{price}/g, paintingPriceInput.value);
+                    .replace(/{image}/g, imageUrlInput.value);
 
                 // Create WhatsApp link
                 const phoneNumber = phoneNumberInput.value.replace(/[^0-9]/g, '');
