@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painting Details Generator</title>
-    <!-- QR Code Generator Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- QR Code Styling Library -->
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -124,6 +124,19 @@
         .qrcode-container {
             text-align: center;
             margin-top: 20px;
+            padding: 20px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrcode, #kakotoeQrcode {
+            margin: 0 auto;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
         }
         .json-output {
             background-color: #f8f9fa;
@@ -183,36 +196,36 @@
                     <label for="painterName">Artist Name:</label>
                     <input type="text" id="painterName" placeholder="e.g. Romeo Piké" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="paintingPrice">Price:</label>
                     <input type="text" id="paintingPrice" placeholder="e.g. SRD 4000,-" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="phoneNumber">WhatsApp Phone Number:</label>
                     <input type="text" id="phoneNumber" placeholder="e.g. 597123456789" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="messageTemplate">WhatsApp Message Template:</label>
                     <textarea id="messageTemplate" required>Beste heer {name},
-Ik ben geintereseerd in een schilderij te zien Bij Kakatoe @ Weidestraat 98
+Ik ben geintereseerd in een schilderij te zien bij Kakatoe @ Weidestraat 98
 Ik zie dat hij te koop is voor {price}</textarea>
                     <small>Use {name} and {price} as placeholders that will be replaced with actual values.</small>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="imageUrl">Image URL:</label>
                     <input type="url" id="imageUrl" placeholder="https://example.com/painting.jpg" class="full-width">
                     <small>Enter a direct link to the image on the web</small>
                 </div>
-                
+
                 <button type="button" id="generateBtn">Generate</button>
                 <button type="reset">Reset</button>
             </form>
         </div>
-        
+
         <div class="preview-section">
             <h2>Preview</h2>
             <div id="paintingPreview">
@@ -227,30 +240,30 @@ Ik zie dat hij te koop is voor {price}</textarea>
                     </div>
                 </div>
             </div>
-            
+
             <div class="qrcode-container">
                 <h3>WhatsApp QR Code</h3>
                 <div id="qrcode"></div>
                 <button id="downloadQrBtn" style="display: none; margin-top: 10px;">Download QR Code</button>
             </div>
         </div>
-        
+
         <div class="output-section">
             <h2>Generated Output</h2>
-            
+
             <div class="tabs">
                 <div class="tab active" data-tab="whatsappLink">WhatsApp Link</div>
                 <div class="tab" data-tab="kakatoeLink">Kakatoe Page Link</div>
                 <div class="tab" data-tab="htmlCode">HTML Code</div>
                 <div class="tab" data-tab="jsonData">JSON Data</div>
             </div>
-            
+
             <div class="tab-content active" id="whatsappLink">
                 <p>WhatsApp Direct Link:</p>
                 <div class="json-output" id="waLinkOutput">Generate a link first...</div>
                 <button class="copy-btn" id="copyWaLinkBtn">Copy Link</button>
             </div>
-            
+
             <div class="tab-content" id="kakatoeLink">
                 <p>Kakatoe Page Link:</p>
                 <div class="json-output" id="kakatoeLinkOutput">Generate a link first...</div>
@@ -265,13 +278,13 @@ Ik zie dat hij te koop is voor {price}</textarea>
                     The image URL is included directly in the JSON data.
                 </p>
             </div>
-            
+
             <div class="tab-content" id="htmlCode">
                 <p>HTML Code for Painting Display:</p>
                 <div class="json-output" id="htmlOutput">Generate HTML first...</div>
                 <button class="copy-btn" id="copyHtmlBtn">Copy HTML</button>
             </div>
-            
+
             <div class="tab-content" id="jsonData">
                 <p>JSON Data for Painting:</p>
                 <div class="json-output" id="jsonOutput">Generate JSON first...</div>
@@ -290,30 +303,30 @@ Ik zie dat hij te koop is voor {price}</textarea>
             const messageTemplateInput = document.getElementById('messageTemplate');
             const imageUrlInput = document.getElementById('imageUrl');
             const generateBtn = document.getElementById('generateBtn');
-            
+
             const previewName = document.getElementById('previewName');
             const previewPrice = document.getElementById('previewPrice');
             const previewContact = document.getElementById('previewContact');
             const previewImage = document.getElementById('previewImage');
-            
+
             const waLinkOutput = document.getElementById('waLinkOutput');
             const htmlOutput = document.getElementById('htmlOutput');
             const jsonOutput = document.getElementById('jsonOutput');
-            
+
             const qrcodeContainer = document.getElementById('qrcode');
             const downloadQrBtn = document.getElementById('downloadQrBtn');
-            
+
             const kakatoeLinkOutput = document.getElementById('kakatoeLinkOutput');
             const kakotoeQrcodeContainer = document.getElementById('kakotoeQrcode');
             const downloadKakatoeQrBtn = document.getElementById('downloadKakatoeQrBtn');
-            
+
             // Copy buttons
             const copyWaLinkBtn = document.getElementById('copyWaLinkBtn');
             const copyKakatoeLinkBtn = document.getElementById('copyKakatoeLinkBtn');
             const copyHtmlBtn = document.getElementById('copyHtmlBtn');
             const copyJsonBtn = document.getElementById('copyJsonBtn');
             const copyBase64Btn = document.getElementById('copyBase64Btn');
-            
+
             // Tab functionality
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
@@ -321,16 +334,16 @@ Ik zie dat hij te koop is voor {price}</textarea>
                     // Remove active class from all tabs and contents
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
+
                     // Add active class to clicked tab
                     this.classList.add('active');
-                    
+
                     // Show corresponding content
                     const tabId = this.getAttribute('data-tab');
                     document.getElementById(tabId).classList.add('active');
                 });
             });
-            
+
             // Image preview for URL
             imageUrlInput.addEventListener('input', function() {
                 const url = this.value.trim();
@@ -349,16 +362,16 @@ Ik zie dat hij te koop is voor {price}</textarea>
                     previewImage.innerHTML = 'No image URL provided';
                 }
             });
-            
+
             // Live preview updates
             painterNameInput.addEventListener('input', function() {
                 previewName.textContent = this.value || 'Artist Name';
             });
-            
+
             paintingPriceInput.addEventListener('input', function() {
                 previewPrice.textContent = this.value || 'Price';
             });
-            
+
             // Generate button click
             generateBtn.addEventListener('click', function() {
                 // Validate form
@@ -366,33 +379,33 @@ Ik zie dat hij te koop is voor {price}</textarea>
                     alert('Please fill in all required fields');
                     return;
                 }
-                
+
                 // Create WhatsApp message
                 let message = messageTemplateInput.value
                     .replace(/{name}/g, painterNameInput.value)
                     .replace(/{price}/g, paintingPriceInput.value);
-                
+
                 // Create WhatsApp link
                 const phoneNumber = phoneNumberInput.value.replace(/[^0-9]/g, '');
                 const encodedMessage = encodeURIComponent(message);
                 const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-                
+
                 // Update preview contact button
                 previewContact.href = whatsappLink;
-                
+
                 // Create JSON data
                 let jsonData = {
                     "Painter": painterNameInput.value,
                     "Price": paintingPriceInput.value,
                     "buy": whatsappLink
                 };
-                
+
                 // Add image URL to JSON if provided
                 if (imageUrlInput.value.trim()) {
                     jsonData.img = imageUrlInput.value.trim();
                     jsonData.imgType = "url"; // Indicate that this is a URL
                 }
-                
+
                 // Create HTML code
                 const htmlCode = `<!DOCTYPE html>
 <html lang="en">
@@ -421,105 +434,143 @@ Ik zie dat hij te koop is voor {price}</textarea>
     </div>
 </body>
 </html>`;
-                
+
                 // For QR code data, include the same image URL
                 let qrCodeJsonData = {
                     "Painter": painterNameInput.value,
                     "Price": paintingPriceInput.value,
                     "buy": whatsappLink
                 };
-                
+
                 // Include image URL in QR code data if provided
                 if (imageUrlInput.value.trim()) {
                     qrCodeJsonData.img = imageUrlInput.value.trim();
                     qrCodeJsonData.imgType = "url"; // Indicate it's a URL
                 }
-                
+
                 const qrJsonStr = JSON.stringify(qrCodeJsonData);
                 // We'll use encodeURIComponent directly on the JSON string instead of base64 encoding
                 // This is more reliable across browsers and prevents encoding issues
                 const kakatoeLink = `https://kakatoe.bee.sr/painting.html?data=${encodeURIComponent(qrJsonStr)}`;
-                
+
                 kakatoeLinkOutput.textContent = kakatoeLink;
-                
+
                 // Update outputs
                 waLinkOutput.textContent = whatsappLink;
                 htmlOutput.textContent = htmlCode;
                 jsonOutput.textContent = JSON.stringify(jsonData, null, 2);
-                
+
                 // Generate WhatsApp QR code
                 qrcodeContainer.innerHTML = '';
-                new QRCode(qrcodeContainer, {
-                    text: whatsappLink,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
+                const whatsappQrCode = new QRCodeStyling({
+                    width: 240,
+                    height: 240,
+                    type: "svg",
+                    image: "./WhatsApp.svg",
+                    imageOptions: {
+                        crossOrigin: "anonymous",
+                        margin: 10,
+                        imageSize: 0.3
+                    },
+                    data: whatsappLink,
+                    margin: 20,
+                    dotsOptions: {
+                        color: "#25D366", // WhatsApp green
+                        type: "rounded"
+                    },
+                    backgroundOptions: {
+                        color: "#FFFFFF",
+                    },
+                    cornersSquareOptions: {
+                        type: "extra-rounded"
+                    },
+                    cornersDotOptions: {
+                        type: "dot"
+                    }
                 });
-                
+                whatsappQrCode.append(qrcodeContainer);
                 downloadQrBtn.style.display = 'inline-block';
-                
+
                 // Generate Kakatoe QR code
                 kakotoeQrcodeContainer.innerHTML = '';
-                new QRCode(kakotoeQrcodeContainer, {
-                    text: kakatoeLink,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
+                const kakatoeQrCode = new QRCodeStyling({
+                    width: 1000,
+                    height: 1000,
+                    type: "svg",
+                    data: kakatoeLink,
+                    image: "./painting.png",
+                    imageOptions: {
+                        crossOrigin: "anonymous",
+                        margin: 10,
+                        imageSize: 0.3
+                    },
+                    margin: 0,
+                    dotsOptions: {
+                        color: "#196135", // Match header color
+                        type: "dots"
+                    },
+                    backgroundOptions: {
+                        color: "#FFFFFF",
+                    },
+                    cornersSquareOptions: {
+                        type: "square"
+                    },
+                    cornersDotOptions: {
+                        type: "dot"
+                    }
                 });
-                
+                kakatoeQrCode.append(kakotoeQrcodeContainer);
                 downloadKakatoeQrBtn.style.display = 'inline-block';
+
+                // Store QR code objects for download functionality
+                window.whatsappQrCode = whatsappQrCode;
+                window.kakatoeQrCode = kakatoeQrCode;
             });
-            
+
             // Copy functions
             copyWaLinkBtn.addEventListener('click', function() {
                 copyToClipboard(waLinkOutput.textContent);
             });
-            
+
             copyKakatoeLinkBtn.addEventListener('click', function() {
                 copyToClipboard(kakatoeLinkOutput.textContent);
             });
-            
+
             copyHtmlBtn.addEventListener('click', function() {
                 copyToClipboard(htmlOutput.textContent);
             });
-            
+
             copyJsonBtn.addEventListener('click', function() {
                 copyToClipboard(jsonOutput.textContent);
             });
-            
+
             copyBase64Btn.addEventListener('click', function() {
                 const jsonStr = jsonOutput.textContent;
                 const base64Json = btoa(jsonStr);
                 copyToClipboard(base64Json);
                 alert('Base64 encoded JSON copied to clipboard!');
             });
-            
+
             // Download WhatsApp QR Code
             downloadQrBtn.addEventListener('click', function() {
-                const canvas = qrcodeContainer.querySelector('canvas');
-                if (canvas) {
-                    const link = document.createElement('a');
-                    link.download = `whatsapp-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}.png`;
-                    link.href = canvas.toDataURL();
-                    link.click();
+                if (window.whatsappQrCode) {
+                    window.whatsappQrCode.download({
+                        name: `whatsapp-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}`,
+                        extension: 'svg'
+                    });
                 }
             });
-            
+
             // Download Kakatoe QR Code
             downloadKakatoeQrBtn.addEventListener('click', function() {
-                const canvas = kakotoeQrcodeContainer.querySelector('canvas');
-                if (canvas) {
-                    const link = document.createElement('a');
-                    link.download = `kakatoe-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}.png`;
-                    link.href = canvas.toDataURL();
-                    link.click();
+                if (window.kakatoeQrCode) {
+                    window.kakatoeQrCode.download({
+                        name: `kakatoe-qrcode-${painterNameInput.value.replace(/\s+/g, '-')}`,
+                        extension: 'svg'
+                    });
                 }
             });
-            
+
             // Helper function to copy text to clipboard
             function copyToClipboard(text) {
                 const textarea = document.createElement('textarea');
