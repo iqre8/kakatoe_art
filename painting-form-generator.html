@@ -489,14 +489,14 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 // Generate WhatsApp QR code
                 qrcodeContainer.innerHTML = '';
                 const whatsappQrCode = new QRCodeStyling({
-                    width: 200,
-                    height: 200,
+                    width: 300,
+                    height: 300,
                     type: "svg",
                     image: "./WhatsApp.svg",
                     imageOptions: {
                         crossOrigin: "anonymous",
                         margin: 0,
-                        imageSize: 0.3
+                        imageSize: 0.4
                     },
                     data: whatsappLink,
                     margin: 0,
@@ -520,15 +520,15 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 // Generate Kakatoe QR code
                 kakatoeQrcodeContainer.innerHTML = '';
                 const kakatoeQrCode = new QRCodeStyling({
-                    width: 240,
-                    height: 240,
+                    width: 300,
+                    height: 300,
                     type: "svg",
                     data: kakatoeLink,
                     image: "./canvas.svg",
                     imageOptions: {
                         crossOrigin: "anonymous",
                         margin: 0,
-                        imageSize: 0.3,
+                        imageSize: 0.4,
                         hideBackgroundDots: true
                     },
                     margin: 0,
