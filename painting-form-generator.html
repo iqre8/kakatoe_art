@@ -491,12 +491,13 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 const whatsappQrCode = new QRCodeStyling({
                     width: 300,
                     height: 300,
-                    type: "canvas",
+                    type: "svg",
                     image: "./WhatsApp.svg",
                     imageOptions: {
                         saveAsBlob:true,
                         margin: 0,
-                        imageSize: 0.4
+                        imageSize: 0.4,
+                        hideBackgroundDots: true
                     },
                     data: whatsappLink,
                     margin: 0,
