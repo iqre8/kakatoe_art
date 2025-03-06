@@ -493,7 +493,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     height: 300,
                     type: "canvas",
                     data: whatsappLink,
-                    image: "./WhatsApp.svg",
+                    image: "https://kakatoe.bee.sr/WhatsApp.svg",
                     imageOptions: {
                         saveAsBlob:true,
                         margin: 0,
@@ -526,7 +526,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     height: 300,
                     type: "canvas",
                     data: kakatoeLink,
-                    image: "./canvas.svg",
+                    image: "https://kakatoe.bee.sr/canvas.svg",
                     imageOptions: {
                         saveAsBlob: true,
                         hideBackgroundDots: true,
@@ -550,6 +550,11 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     cornersDotOptions: {
                         type: "dot",
                         color: "#000000"
+                    },
+                    qrOptions: {
+                        typeNumber: "0",
+                        mode:"Byte",
+                        errorCorrectionLevel:"Q"
                     }
                 });
                 kakatoeQrCode.append(kakatoeQrcodeContainer);
