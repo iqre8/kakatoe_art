@@ -367,11 +367,35 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
             // Live preview updates
             painterNameInput.addEventListener('input', function() {
                 previewName.textContent = this.value || 'Artist Name';
+                updateContactButton();
             });
 
             paintingPriceInput.addEventListener('input', function() {
                 previewPrice.textContent = this.value || 'Price';
+                updateContactButton();
             });
+
+            phoneNumberInput.addEventListener('input', updateContactButton);
+            messageTemplateInput.addEventListener('input', updateContactButton);
+
+            // Function to update the contact button with current values
+            function updateContactButton() {
+                if (!phoneNumberInput.value) return;
+
+                // Create WhatsApp message with current values
+                let message = messageTemplateInput.value
+                    .replace(/{name}/g, painterNameInput.value)
+                    .replace(/{price}/g, paintingPriceInput.value)
+                    .replace(/{image}/g, imageUrlInput.value);
+
+                // Create WhatsApp link
+                const phoneNumber = phoneNumberInput.value.replace(/[^0-9]/g, '');
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+                // Update preview contact button
+                previewContact.href = whatsappLink;
+            }
 
             // Generate button click
             generateBtn.addEventListener('click', function() {
