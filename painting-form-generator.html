@@ -199,7 +199,7 @@
 
                 <div class="form-group">
                     <label for="paintingPrice">Price:</label>
-                    <input type="text" id="paintingPrice" placeholder="e.g. SRD 4000,-" required>
+                    <input type="text" id="paintingPrice" placeholder="e.g. SRD 4.000,-" required>
                 </div>
 
                 <div class="form-group">
@@ -236,7 +236,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     <div class="painting-details">
                         <div class="painter-name" id="previewName">Artist Name</div>
                         <div class="price" id="previewPrice">Price</div>
-                        <a href="#" class="contact-button" id="previewContact">Contact to Purchase</a>
+                        <a href="#" class="contact-button" id="previewContact">Contact</a>
                     </div>
                 </div>
             </div>
@@ -491,10 +491,10 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 const whatsappQrCode = new QRCodeStyling({
                     width: 300,
                     height: 300,
-                    type: "svg",
+                    type: "canvas",
                     image: "./WhatsApp.svg",
                     imageOptions: {
-                        crossOrigin: "anonymous",
+                        saveAsBlob:true,
                         margin: 0,
                         imageSize: 0.4
                     },
@@ -502,7 +502,7 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     margin: 0,
                     dotsOptions: {
                         color: "#25D366", // WhatsApp green
-                        type: "rounded"
+                        type: "dots"
                     },
                     backgroundOptions: {
                         color: "#FFFFFF",
@@ -522,19 +522,20 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 const kakatoeQrCode = new QRCodeStyling({
                     width: 300,
                     height: 300,
-                    type: "svg",
+                    type: "canvas",
                     data: kakatoeLink,
                     image: "./canvas.svg",
                     imageOptions: {
-                        crossOrigin: "anonymous",
+                        saveAsBlob:true,
                         margin: 0,
                         imageSize: 0.4,
                         hideBackgroundDots: true
                     },
                     margin: 0,
                     dotsOptions: {
-                        color: "#196135", // Match header color
-                        type: "dots"
+                        color: "#196135",
+                        type: "dots",
+                        roundSize: true
                     },
                     backgroundOptions: {
                         color: "#FFFFFF",
