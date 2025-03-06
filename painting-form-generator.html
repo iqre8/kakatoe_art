@@ -528,25 +528,28 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                     data: kakatoeLink,
                     image: "./canvas.svg",
                     imageOptions: {
-                        saveAsBlob:true,
-                        margin: 0,
+                        saveAsBlob: true,
+                        hideBackgroundDots: true,
                         imageSize: 0.4,
-                        hideBackgroundDots: true
+                        margin: 0
                     },
                     margin: 0,
                     dotsOptions: {
-                        color: "#196135",
                         type: "dots",
+                        color: "#196135",
                         roundSize: true
                     },
                     backgroundOptions: {
-                        color: "#FFFFFF",
+                        color: "#ffffff",
+                        round: 0
                     },
                     cornersSquareOptions: {
-                        type: "square"
+                        type: "extra-rounded",
+                        color: "#000000"
                     },
                     cornersDotOptions: {
-                        type: "dot"
+                        type: "dot",
+                        color: "#000000"
                     }
                 });
                 kakatoeQrCode.append(kakatoeQrcodeContainer);
