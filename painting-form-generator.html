@@ -518,20 +518,20 @@ Ik zie dat hij te koop is voor {price}. {image} </textarea>
                 downloadQrBtn.style.display = 'inline-block';
 
                 // Generate Kakatoe QR code
-                kakatoeQrcodeContainer.innerHTML = '';
+                kakotoeQrcodeContainer.innerHTML = '';
                 const kakatoeQrCode = new QRCodeStyling({
-                    width: 1000,
-                    height: 1000,
+                    width: 240,
+                    height: 240,
                     type: "svg",
                     data: kakatoeLink,
                     image: "./canvas.svg",
                     imageOptions: {
                         crossOrigin: "anonymous",
-                        margin: 0,
-                        imageSize: 0.3,
+                        margin: 5,
+                        imageSize: 0.4,
                         hideBackgroundDots: true
                     },
-                    margin: 0,
+                    margin: 10,
                     dotsOptions: {
                         color: "#196135", // Match header color
                         type: "dots"
